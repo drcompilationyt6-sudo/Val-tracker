@@ -40,12 +40,13 @@ export class Search extends Workers {
         { name: 'meta-llama/llama-3.3-70b-instruct:free', weight: 1 / 4, supportsReasoning: false },
     ]
 
-    public async doSearch(data: DashboardData, page: Page, isMobile: boolean): Promise<number> {
+    public async doSearch(data: DashboardData, page: Page, isMobile: boolean, maxSearches?: number): Promise<number> {
         const startBalance = Number(this.bot.userData.currentPoints ?? 0)
 
-        this.bot.logger.info(isMobile, 'SEARCH-BING', `Starting Bing searches | currentPoints=${startBalance}`)
+        this.bot.logger.info(isMobile, 'SEARCH-BING', `Starting Bing searches | currentPoints=${startBalance} | maxSearches=${maxSearches ?? 'unlimited'}`)
 
         let totalGainedPoints = 0
+        let searchCount = 0
 
         try {
             let searchCounters: Counters = await this.bot.browser.func.getSearchPoints()
@@ -186,12 +187,23 @@ export class Search extends Workers {
                 }
 
                 missingPointsTotal = newMissingPointsTotal
+                searchCount++
 
                 if (missingPointsTotal === 0) {
                     this.bot.logger.info(
                         isMobile,
                         'SEARCH-BING',
                         'All required search points earned, stopping main search loop'
+                    )
+                    break
+                }
+
+                // Check if we've reached maxSearches limit
+                if (maxSearches && searchCount >= maxSearches) {
+                    this.bot.logger.info(
+                        isMobile,
+                        'SEARCH-BING',
+                        `Reached maxSearches limit (${maxSearches}), stopping search batch`
                     )
                     break
                 }
