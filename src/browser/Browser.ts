@@ -6,6 +6,7 @@ import type { MicrosoftRewardsBot } from '../index'
 import { loadSessionData, saveFingerprintData } from '../util/Load'
 import { UserAgentManager } from './UserAgent'
 
+
 import type { Account, AccountProxy } from '../interface/Account'
 
 /* Test Stuff
