@@ -13,7 +13,8 @@
     "legacyFallback": {
         "enabled": true,
         "minDelay": "1hr",
-        "maxDelay": "2hr"
+        "maxDelay": "2hr",
+        "alternate": true
     },
     "workers": {
         "doDailySet": true,
